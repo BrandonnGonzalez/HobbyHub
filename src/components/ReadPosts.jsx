@@ -15,6 +15,18 @@ function ReadPosts() {
                 .select()
                 .order('created_at', { ascending: true });
 
+            // 🔍 LOG THE DATA TO CONSOLE
+            console.log('=== FULL API RESPONSE ===');
+            console.log('Data Array:', data);
+            console.log('Number of posts:', data?.length);
+
+            // Show the structure of the first item
+            if (data && data.length > 0) {
+                console.log('=== FIRST POST STRUCTURE ===');
+                console.log(data[0]);
+                console.log('Available fields:', Object.keys(data[0]));
+            }
+
             setMembers(data);
         };
 
@@ -70,6 +82,15 @@ function ReadPosts() {
                         <p className="post-detail">
                             <strong style={{ color: '#667eea' }}>Weight:</strong> {member.weight} lbs
                         </p>
+                        <p className="post-detail">
+                            <strong style={{ color: '#667eea' }}>Posted:</strong>{' '}
+                            {new Date(member.created_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                            })}
+                        </p>
+
                     </div>
                 ))}
             </div>
