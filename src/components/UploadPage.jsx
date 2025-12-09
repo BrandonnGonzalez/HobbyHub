@@ -1,29 +1,63 @@
+import { supabase } from '../client'
+import { useState } from 'react'
 
 function UploadPage() {
-    return (
-        <div> 
-            <h2>Upload your favorite lift's information here!</h2>
-            <form>
-                <label>Full name: 
-                    <input type="fullName" name="fullName" />
-                </label>
-                <label>Lift name:
-                    <input type="lift" name="lift" />
-                </label>
-                <label>Weight:
-                    <input type="weight" name="weight" />
-                </label>
-                <label>Picture</label>
-                <img src="https://row.gymshark.com/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2F8urtyqugdt2l%2F13rxvRwt8eBlkuYauKCGFO%2Fa614247bf65618c10150f6d40a709a9c%2Fdesktop-jamal-browner-deadlift.jpg&w=3840&q=85" width="500px" height="300px"></img>
+  const [post, setPost] = useState({
+    fullName: "",
+    liftName: "",
+    weight: ""
+  });
 
-                <input type="submit" value="Submit"/>
+  const uploadPost = async (event) => {
+    event.preventDefault();
 
+    await supabase
+  .from('uploads')
+  .insert({
+    full_name: post.fullName,
+    lift_name: post.liftName,
+    weight: post.weight,
+  });
+    window.location = "/";
+  }
 
+  return (
+    <div>
+      <h2>Upload your favorite lift's information here!</h2>
+      <form onSubmit={uploadPost}>
+        
+        <label>
+          Full name:
+          <input
+            type="text"
+            name="fullName"
+            onChange={(e) => setPost({ ...post, fullName: e.target.value })}
+          />
+        </label>
 
-            </form>
+        <label>
+          Lift name:
+          <input
+            type="text"
+            name="liftName"
+            onChange={(e) => setPost({ ...post, liftName: e.target.value })}
+          />
+        </label>
 
-        </div>
-    )
+        <label>
+          Weight:
+          <input
+            type="text"
+            name="weight"
+            onChange={(e) => setPost({ ...post, weight: e.target.value })}
+          />
+        </label>
+
+        <input type="submit" value="Submit" />
+
+      </form>
+    </div>
+  );
 }
 
 export default UploadPage;
