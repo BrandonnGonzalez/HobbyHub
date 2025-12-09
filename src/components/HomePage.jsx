@@ -2,18 +2,28 @@ import { IconBarbell } from '@tabler/icons-react'
 import { Link } from 'react-router-dom'
 
 import ReadPosts from './ReadPosts'
+import './HomePage.css'
 
 function HomePage() {
 
     return (
-        <div>
-            <IconBarbell size={60} />
-            <h1> Show Your Best!</h1>
-            <p> This is a website to connect with fellow powerlifters and show off your most favorite lifts to date of your lifting career!</p>
-            <Link to='/UploadPage'>
-                <button>Upload your favorite lift!</button>
-            </Link>
-            <ReadPosts />
+        <div className="home-page">
+            <div className="home-container">
+                <div className="home-header">
+                    <IconBarbell size={80} color="#667eea" className="home-icon" />
+                    <h1 className="home-title">Show Your Best!</h1>
+                    <p className="home-description">
+                        Connect with fellow powerlifters and showcase your most impressive lifts.
+                        Share your journey, inspire others, and celebrate your progress!
+                    </p>
+                    <Link to='/UploadPage' className="home-link">
+                        <button className="home-cta-button">
+                            🏋️ Upload Your Favorite Lift!
+                        </button>
+                    </Link>
+                </div>
+                <ReadPosts />
+            </div>
         </div>
     );
 }

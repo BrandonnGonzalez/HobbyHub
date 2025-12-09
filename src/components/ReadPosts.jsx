@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../client';
 import { IconBarbell } from '@tabler/icons-react'
+import './ReadPosts.css'
 
 function ReadPosts() {
     const [members, setMembers] = useState([]);
@@ -24,69 +25,51 @@ function ReadPosts() {
         navigate(`/edit/${memberId}`);
     };
 
-    const deletePost = async (memberId) => {
+    const deletePost = async (id) => {
         await supabase
             .from('uploads')
             .delete()
-            .eq('id', memberId)
-        window.location = '/';
+            .eq('id', id);
+
+        // Refresh the posts after deletion
+        const { data } = await supabase
+            .from('uploads')
+            .select()
+            .order('created_at', { ascending: true });
+        setMembers(data);
     }
 
     return (
-        <div style={{ marginLeft: '300px', padding: '2rem' }}>
-            <h1>Lifting Forum</h1>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+        <div className="read-posts-container">
+            <h1 className="read-posts-title">Lifting Forum</h1>
+            <div className="posts-grid">
                 {members && members.map((member) => (
-                    <div key={member.id} style={{
-                        border: '1px solid #ddd',
-                        borderRadius: '8px',
-                        padding: '1.5rem',
-                        backgroundColor: 'black',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                        position: 'relative'
-                    }}>
-                        <div style={{
-                            position: 'absolute',
-                            top: '1rem',
-                            right: '1rem',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '0.5rem'
-                        }}>
+                    <div key={member.id} className="post-card">
+                        <div className="post-actions">
                             <button
                                 onClick={() => handleEdit(member.id)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontSize: '1.5rem',
-                                    color: 'white',
-                                    padding: '0.5rem',
-                                    lineHeight: '1'
-                                }}
+                                className="action-button edit-button"
                             >
-                                ⋮
+                                ✏️
                             </button>
                             <button
-                                onClick={() => deleteMember(member.id)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontSize: '1.5rem',
-                                    color: 'white',
-                                    padding: '0.5rem',
-                                    lineHeight: '1'
-                                }}
+                                onClick={() => deletePost(member.id)}
+                                className="action-button delete-button"
                             >
                                 ✕
                             </button>
                         </div>
 
-                        <h3>{member.full_name}</h3>
-                        <p><strong>Lift:</strong> {member.lift_name}</p>
-                        <p><strong>Weight:</strong> {member.weight}</p>
-                        <IconBarbell size={30} />
+                        <div className="post-icon">
+                            <IconBarbell size={40} color="#667eea" />
+                        </div>
+                        <h3 className="post-name">{member.full_name}</h3>
+                        <p className="post-detail">
+                            <strong style={{ color: '#667eea' }}>Lift:</strong> {member.lift_name}
+                        </p>
+                        <p className="post-detail">
+                            <strong style={{ color: '#667eea' }}>Weight:</strong> {member.weight} lbs
+                        </p>
                     </div>
                 ))}
             </div>

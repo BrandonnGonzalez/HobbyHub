@@ -1,5 +1,6 @@
 import { supabase } from '../client'
 import { useState } from 'react'
+import './UploadPage.css'
 
 function UploadPage() {
   const [post, setPost] = useState({
@@ -11,51 +12,71 @@ function UploadPage() {
   const uploadPost = async (event) => {
     event.preventDefault();
 
-    await supabase
-  .from('uploads')
-  .insert({
-    full_name: post.fullName,
-    lift_name: post.liftName,
-    weight: post.weight,
-  });
+    const { data, error } = await supabase
+      .from('uploads')
+      .insert({
+        full_name: post.fullName,
+        lift_name: post.liftName,
+        weight: post.weight,
+      });
+
+    console.log("DATA:", data);
+    console.log("ERROR:", error);
+
     window.location = "/";
   }
 
   return (
-    <div>
-      <h2>Upload your favorite lift's information here!</h2>
-      <form onSubmit={uploadPost}>
-        
-        <label>
-          Full name:
-          <input
-            type="text"
-            name="fullName"
-            onChange={(e) => setPost({ ...post, fullName: e.target.value })}
-          />
-        </label>
+    <div className="upload-page">
+      <div className="upload-card">
+        <h2 className="upload-title">Upload Your Favorite Lift! 🏋️</h2>
 
-        <label>
-          Lift name:
-          <input
-            type="text"
-            name="liftName"
-            onChange={(e) => setPost({ ...post, liftName: e.target.value })}
-          />
-        </label>
+        <form onSubmit={uploadPost} className="upload-form">
 
-        <label>
-          Weight:
-          <input
-            type="text"
-            name="weight"
-            onChange={(e) => setPost({ ...post, weight: e.target.value })}
-          />
-        </label>
+          <label className="form-group">
+            <span className="form-label">Full Name:</span>
+            <input
+              type="text"
+              name="fullName"
+              value={post.fullName}
+              onChange={(e) => setPost({ ...post, fullName: e.target.value })}
+              required
+              className="form-input"
+            />
+          </label>
 
-        <input type="submit" value="Submit" />
+          <label className="form-group">
+            <span className="form-label">Lift Name:</span>
+            <input
+              type="text"
+              name="liftName"
+              value={post.liftName}
+              onChange={(e) => setPost({ ...post, liftName: e.target.value })}
+              required
+              placeholder="e.g., Deadlift, Bench Press, Squat"
+              className="form-input"
+            />
+          </label>
 
-      </form>
+          <label className="form-group">
+            <span className="form-label">Weight (lbs):</span>
+            <input
+              type="number"
+              name="weight"
+              value={post.weight}
+              onChange={(e) => setPost({ ...post, weight: e.target.value })}
+              required
+              placeholder="e.g., 315"
+              className="form-input"
+            />
+          </label>
+
+          <button type="submit" className="submit-button">
+            Submit Lift
+          </button>
+
+        </form>
+      </div>
     </div>
   );
 }
