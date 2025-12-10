@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../client';
-import { IconBarbell } from '@tabler/icons-react'
+import { IconBarbell, IconHeart } from '@tabler/icons-react'
 import './ReadPosts.css'
 
 function ReadPosts() {
@@ -51,6 +51,23 @@ function ReadPosts() {
         setMembers(data);
     }
 
+    const handleLike = async (postId, currentLikes) => {
+        // Increment the like counter in the database
+        const { error } = await supabase
+            .from('uploads')
+            .update({ like_counter: (currentLikes || 0) + 1 })
+            .eq('id', postId);
+
+        if (!error) {
+            // Update the local state to reflect the change immediately
+            setMembers(members.map(member =>
+                member.id === postId
+                    ? { ...member, like_counter: (currentLikes || 0) + 1 }
+                    : member
+            ));
+        }
+    }
+
     return (
         <div className="read-posts-container">
             <h1 className="read-posts-title">Lifting Forum</h1>
@@ -91,6 +108,17 @@ function ReadPosts() {
                             })}
                         </p>
 
+                        <div className="like-counter">
+                            <span
+                                className="heart-icon"
+                                onClick={() => handleLike(member.id, member.like_counter)}
+                                title="Like this post"
+                            >
+                                <IconHeart size={20} color="#667eea" />
+                            </span>
+                            <span className="like-count">{member.like_counter || 0}</span>
+                            <span className="like-text">Likes</span>
+                        </div>
                     </div>
                 ))}
             </div>
